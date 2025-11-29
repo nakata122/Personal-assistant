@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
+import Login from "./Login";
 
 const Header = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [login, setLogin] = useState<boolean>(false);
 
-//   useEffect(() => {
-//     setIsVisible(true);
-//   }, []);
-
-  const navLinks = [
-    { id: 1, name: "Home", href: "#" },
-    { id: 2, name: "About", href: "#" },
-    { id: 9, name: "Contact", href: "#" }
-  ];
+  function toggleLogin() {
+    setLogin(!login);
+  };
 
   return (
+    <>
     <header
-      className={`bg-white shadow-lg fixed w-full top-0 left-0 z-50 transition-transform duration-700 transform ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
+      className={`bg-white shadow-lg fixed w-full top-0 left-0 z-10 transition-transform duration-700 transform ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -24,21 +21,16 @@ const Header = () => {
           </div>
 
           <nav className="hidden lg:flex space-x-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.href}
-                className="text-gray-600 hover:text-gray-900 relative group py-2 text-sm"
-              >
-                {link.name}
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
-              </a>
-            ))}
+              <button onClick={toggleLogin} className="text-white bg-gray-900 p-6 rounded-2xl hover:text-gray-200 relative group py-2 text-2xl cursor-pointer">
+                Login
+              </button>
           </nav>
 
         </div>
       </div>
     </header>
+    {login ? <Login toggle={toggleLogin}/> : null}
+    </>
   );
 };
 
