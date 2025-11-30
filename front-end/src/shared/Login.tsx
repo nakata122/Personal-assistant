@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsXCircleFill, BsPersonFill } from "react-icons/bs";
 
@@ -7,11 +6,10 @@ type ModalProps = {
 };
 
 function Modal({ toggle } : ModalProps) {
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
 
     function handleLogin() {
-
+        console.log("I am hhere");
+        window.location.href = "http://localhost:3000/api/auth/google";
     }
 
     return (<div className="flex absolute top-0 left-0 h-screen w-screen backdrop-blur-sm z-20">
@@ -19,17 +17,17 @@ function Modal({ toggle } : ModalProps) {
                 <BsXCircleFill onClick={toggle} className="w-6 h-6 m-2 relative ml-auto cursor-pointer" />
 
                 <h1 className="text-4xl font-bold mt-10">Login</h1>
-                <form onSubmit={handleLogin}  className="flex flex-col w-full" >
-                    <button type="submit" className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
+                <div  className="flex flex-col w-full" >
+                    <button onClick={handleLogin} className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
                         <FcGoogle className="w-6 h-6 inline mr-auto"/> 
                         <span className="m-2 font-bold mr-auto">Continue with google</span>
                     </button>
                     
-                    <button type="submit" className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
+                    <button className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
                         <BsPersonFill className="w-6 h-6 inline mr-auto"/> 
                         <span className="m-2 font-bold mr-auto">Continue as guest</span>
                     </button>
-                </form>
+                </div>
             </div>
         </div>);
 }

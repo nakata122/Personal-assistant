@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Login from "./Login";
 
 const Header = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(true);
   const [login, setLogin] = useState<boolean>(false);
 
   function toggleLogin() {
@@ -11,9 +10,7 @@ const Header = () => {
 
   return (
     <>
-    <header
-      className={`bg-white shadow-lg fixed w-full top-0 left-0 z-10 transition-transform duration-700 transform ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
-    >
+    <header className={`bg-white shadow-lg fixed w-full top-0 left-0 z-10 transition-transform duration-700 transform`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="shrink-0">
