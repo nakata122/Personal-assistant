@@ -6,8 +6,10 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-func GetOauthConfig() *oauth2.Config {
-	return &oauth2.Config{
+var Oauth *oauth2.Config;
+
+func InitOauthConfig() {
+	Oauth = &oauth2.Config{
 		ClientID:     os.Getenv("CLIENT_ID"),
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		RedirectURL:  os.Getenv("REDIRECT_URL"),
