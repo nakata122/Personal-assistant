@@ -8,7 +8,13 @@ type ModalProps = {
 function Modal({ toggle } : ModalProps) {
 
     function handleLogin() {
-        console.log("I am hhere");
+        // fetch("http://localhost:3000/api/auth/google", 
+        //     {
+        //         method: "GET",
+        //         credentials: "include"
+        //     }).then(res => {
+        //         console.log(res);
+        //     });
         window.location.href = "http://localhost:3000/api/auth/google";
     }
 
