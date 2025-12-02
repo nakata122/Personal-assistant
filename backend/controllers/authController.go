@@ -1,16 +1,16 @@
 package controllers
 
-
 import (
 	"fmt"
-	"time"
-	"os"
-	"io"
 	"net/http"
+	"os"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 
 	"backend/config"
+	"backend/api"
 )
 
 func Ping(c *gin.Context) { 
@@ -44,22 +44,8 @@ func GoogleCallback(c *gin.Context) {
 		return;
     }
 	setCookies(c, token);
-
-	//Get user info
-    resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken);
-    if err != nil {
-		fmt.Println(err);
-		return;
-    }
-
-	//Read user info
-    userData, err := io.ReadAll(resp.Body);
-    if err != nil {
-		fmt.Println(err);
-		return;
-    }
-
-	fmt.Println(string(userData));
+	
+	api.ReadMessages(c, token);
 
 	//Redirect to front-end
 	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
@@ -103,3 +89,7 @@ func setCookies(c *gin.Context, token *oauth2.Token) {
 		});
 	}
 }
+
+
+
+    

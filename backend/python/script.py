@@ -1,6 +1,7 @@
 import spacy
 import re
 import dateparser
+import sys
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -66,5 +67,6 @@ def extract_email_data(email_text):
 
     return data
     
-extracted_data = extract_email_data(email_text)
+print(sys.argv[1])
+extracted_data = extract_email_data(sys.argv[1])
 print(extracted_data)
