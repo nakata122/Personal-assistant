@@ -8,13 +8,6 @@ type ModalProps = {
 function Modal({ toggle } : ModalProps) {
 
     function handleLogin() {
-        // fetch("http://localhost:3000/api/auth/google", 
-        //     {
-        //         method: "GET",
-        //         credentials: "include"
-        //     }).then(res => {
-        //         console.log(res);
-        //     });
         window.location.href = "http://localhost:3000/api/auth/google";
     }
 
@@ -24,12 +17,12 @@ function Modal({ toggle } : ModalProps) {
 
                 <h1 className="text-4xl font-bold mt-10">Login</h1>
                 <div  className="flex flex-col w-full" >
-                    <button onClick={handleLogin} className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
+                    <button onClick={handleLogin} className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200"> 
                         <FcGoogle className="w-6 h-6 inline mr-auto"/> 
                         <span className="m-2 font-bold mr-auto">Continue with google</span>
                     </button>
                     
-                    <button className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200 cursor-pointer"> 
+                    <button className="flex items-center p-2 border-2 rounded-2xl border-gray-900 m-5 hover:bg-gray-200"> 
                         <BsPersonFill className="w-6 h-6 inline mr-auto"/> 
                         <span className="m-2 font-bold mr-auto">Continue as guest</span>
                     </button>

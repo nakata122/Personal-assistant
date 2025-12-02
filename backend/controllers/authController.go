@@ -13,18 +13,6 @@ import (
 	"backend/config"
 )
 
-func MyCookie(c *gin.Context) { 
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "test",
-		Value:    "I am important cookie",
-		Expires:  time.Now().Add(time.Duration(100) * time.Hour),
-		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-	});
-	c.Redirect(http.StatusFound, "http://localhost:5173/");
-}
-
 func Ping(c *gin.Context) { 
 	c.JSON(200, gin.H {
 		"message": "pong",
@@ -74,7 +62,7 @@ func GoogleCallback(c *gin.Context) {
 	fmt.Println(string(userData));
 
 	//Redirect to front-end
-	c.Redirect(http.StatusFound, "http://localhost:5173/");
+	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
 }
 
 func Logout(c *gin.Context) {

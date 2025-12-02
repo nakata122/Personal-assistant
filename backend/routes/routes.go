@@ -11,5 +11,4 @@ func RegisterPublicEndpoints(router *gin.Engine) {
 	router.GET("./api/auth/google_callback", controllers.GoogleCallback);
 	router.GET("./api/auth/logout", controllers.Logout);
 	router.GET("./api/ping", controllers.Ping);
-	router.GET("./api/setCookie", controllers.MyCookie);
 }
