@@ -10,7 +10,6 @@ import (
 	"golang.org/x/oauth2"
 
 	"backend/config"
-	"backend/api"
 )
 
 func Ping(c *gin.Context) { 
@@ -45,7 +44,7 @@ func GoogleCallback(c *gin.Context) {
     }
 	setCookies(c, token);
 	
-	api.ReadMessages(c, token);
+	ReadMessages(c, token);
 
 	//Redirect to front-end
 	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");

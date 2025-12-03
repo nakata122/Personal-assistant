@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ExtractInfo(c *gin.Context) {
-	cmd := exec.Command("python", "./python/script.py", "hello this is an email pls I am Naiden Kostov.");
+func ExtractInfo(c *gin.Context, message string) {
+	cmd := exec.Command("python", "./python/script.py", message);
 
 	out, err := cmd.CombinedOutput();
 	if err != nil {
