@@ -45,10 +45,9 @@ function Dashboard() {
   return (
     <>
         <div className="flex">
-            <div className="flex flex-col h-screen bg-gray-800 border-e-2 myShadow fixed z-20 top-0 text-white">
-                <div className="p-2 h-16 bg-gray-900">
-                </div>
-                <button className="m-2 p-2 border border-white rounded-2xl myShadow">
+            <div className="flex flex-col h-screen bg-gray-800 border-e-2 fixed myShadow top-0 text-white">
+                <div className="p-2 h-16" />
+                <button className="m-2 p-2 border border-white rounded-2xl shadow-sm shadow-white">
                     <BsHouseFill size='40px' color="white" className="m-auto"/>
                     <h1>Home</h1>
                 </button>

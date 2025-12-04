@@ -1,3 +1,4 @@
+import Footer from './Footer';
 import Header from './Header';
 import { Outlet } from 'react-router';
 
@@ -9,6 +10,7 @@ function Layout() {
         <main className='pt-15'>
             <Outlet />
         </main>
+        <Footer />
     </>
   )
 }

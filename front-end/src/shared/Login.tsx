@@ -11,7 +11,7 @@ function Modal({ toggle } : ModalProps) {
         window.location.href = "http://localhost:3000/api/auth/google";
     }
 
-    return (<div className="flex absolute top-0 left-0 h-screen w-screen backdrop-blur-sm z-20">
+    return (<div className="flex fixed top-0 left-0 h-screen w-screen backdrop-blur-sm z-20 overflow-hidden">
             <div className="m-auto flex flex-col bg-white rounded-2xl text-black items-center w-md h-1/2">
                 <BsXCircleFill onClick={toggle} className="w-6 h-6 m-2 relative ml-auto cursor-pointer" />
 
