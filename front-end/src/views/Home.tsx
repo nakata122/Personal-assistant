@@ -29,18 +29,33 @@ function Home() {
     setLogin(!login);
   };
 
+  function handleGuest() {
+    fetch('/api/ping', { 
+        method: 'get', 
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+    }).then(res => {
+      console.log(res);
+      return res.json();
+    }).then(data => console.log(data));
+    
+  }
+
   return (
   <>
     <div className="flex flex-col text-white h-screen bg-linear-to-b from-sky-600 to-blue-200">
         {login ? <Login toggle={toggleLogin}/> : null}
         <h1 className="title mx-20 my-5 font-bold">
-            Upload and Extract your clients with an email.
+            Zero-setup customer identity recognition
         </h1>
-        <p className="text-2xl w-2/3 ml-auto mr-auto my-5">
-            This app extracts clients automatically from your email with one click. Creates unique client score, monitor behavior, detects red flags. Additionaly you can visualize, summarize emails on an interactive timeline with AI.
+        <p className="text-2xl w-1/3 ml-auto mr-auto my-5">
+            An NLP and AI system that analyzes every email across your company and builds a real-time customer profile.
         </p>
         <div className="flex flex-row justify-center font-medium">
-            <button className="p-3 m-3 rounded-2xl bg-white text-4xl text-blue-950 shadow-2xl hover:bg-gray-100">
+            <button onClick={handleGuest} className="p-3 m-3 rounded-2xl bg-white text-4xl text-blue-950 shadow-2xl hover:bg-gray-100">
                 Try Demo
             </button>
             <button onClick={toggleLogin} className="p-3 m-3 rounded-2xl bg-white text-4xl text-blue-950 shadow-2xl hover:bg-gray-100">

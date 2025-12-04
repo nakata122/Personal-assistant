@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,12 +11,13 @@ import (
 	"golang.org/x/oauth2"
 
 	"backend/config"
+	// "backend/models"
 )
 
 func Ping(c *gin.Context) { 
-	c.JSON(200, gin.H {
-		"message": "pong",
-	});
+	fmt.Println(c.Request.Cookies());
+
+	c.JSON(200, gin.H{"Message": "pong"});
 }
 
 func GoogleLogin(c *gin.Context) {
@@ -44,6 +46,25 @@ func GoogleCallback(c *gin.Context) {
     }
 	setCookies(c, token);
 	
+	userData, err := ReadUserData(token);
+	if err != nil {
+		fmt.Println(err);
+		return;
+    }
+	fmt.Println(userData.Name, userData.Email)
+
+	// query := `SELECT * FROM users`;
+	fmt.Println(config.DbConn);
+	// config.DbConn.Exec(context.Background(), query);
+	// Insert into PostgreSQL
+    query := `INSERT INTO users (google_id, email, name, picture) VALUES ($1, $2, $3, $4)`
+    _, err = config.DbConn.Exec(context.Background(), query, userData.GoogleID, userData.Email, userData.Name, userData.Picture);
+
+    if err != nil {
+		fmt.Println(err);
+        return;
+    }
+
 	ReadMessages(c, token);
 
 	//Redirect to front-end

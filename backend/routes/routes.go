@@ -7,6 +7,7 @@ import (
 )
 
 func RegisterPublicEndpoints(router *gin.Engine) {
+	
 	router.GET("./api/auth/google", controllers.GoogleLogin);
 	router.GET("./api/auth/google_callback", controllers.GoogleCallback);
 	router.GET("./api/auth/logout", controllers.Logout);
