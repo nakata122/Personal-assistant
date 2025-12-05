@@ -77,7 +77,6 @@ func GoogleCallback(c *gin.Context) {
 	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
 
 	go func() {
-		log.Println(id);
 		messages := GetMessages(c, token, id, 2);
 
 		for _,message := range messages {

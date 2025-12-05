@@ -59,7 +59,7 @@ func ParseEmail(c *gin.Context, message string) string{
 	
 	var result HFResponse;
 	json.Unmarshal(body, &result);
-	log.Printf("Request result %v", result);
+	// log.Printf("Request result %v", result);
 
 	if result != nil {
 		return result[0].SummaryText;
@@ -68,11 +68,22 @@ func ParseEmail(c *gin.Context, message string) string{
 }
 
 func GetEmails(c *gin.Context) {
+	val, ok := c.Get("user");
+	if !ok {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"});
+        return;
+    }
+	user, ok := val.(config.ContextUser) 
+	if !ok {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"});
+		return;
+	}
 
-	query := `SELECT * FROM emails WHERE user_id=2`;
-    rows, err := config.DbConn.Query(c, query);
+	query := `SELECT * FROM emails WHERE user_id=$1`;
+    rows, err := config.DbConn.Query(c, query, user.ID);
 	if err != nil {
 		log.Println(err);
+		return;
 	}
 	defer rows.Close();
 
@@ -86,7 +97,7 @@ func GetEmails(c *gin.Context) {
 			log.Println(err);
 		}
 
-		log.Println(e);
+		// log.Println(e);
 		emails = append(emails, e);
 	}
 

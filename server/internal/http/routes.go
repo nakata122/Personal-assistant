@@ -13,5 +13,5 @@ func InitRoutes(router *gin.Engine) {
 	router.GET("./api/auth/google_callback", auth.GoogleCallback);
 	router.GET("./api/auth/logout", auth.Logout);
 	router.GET("./api/ping", auth.Ping);
-	router.GET("./api/emails", emails.GetEmails);
+	router.GET("./api/emails", auth.AuthMiddleware(), emails.GetEmails);
 }

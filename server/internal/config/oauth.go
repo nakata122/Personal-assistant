@@ -6,6 +6,11 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
+// User info stored in context
+type ContextUser struct {
+    ID    int
+    Email string
+}
 
 var Oauth *oauth2.Config;
 

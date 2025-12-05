@@ -59,9 +59,11 @@ function Dashboard() {
                 <div className="flex flex-col grow bg-white">
                     <h1 className="py-2 px-4 my-2 mx-auto rounded-lg bg-gray-900 text-white w-fit font-medium text-lg">Today</h1>
                     {
-                        emails.length === 0 ? <></>:(emails.map((data, i) => {
-                                            return <Card {...data} index={i} />
-                                        }))
+                        emails.length === 0 ? 
+                                            <></>:
+                                            (emails.map((data, i) => {
+                                                return <Card {...data} index={i} />
+                                            }))
                     }
                 </div>
             </div>

@@ -89,6 +89,7 @@ func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []
 		readBodyParts(message.Payload.Parts, &buffer);
 		
 		body := htmlToText(buffer.String());
+		log.Println(body);
 		
 		parsedEmail := emails.ParseEmail(c, body);
 		messages = append(messages, emails.Email{UserID: user_id, Summary: parsedEmail, Title: subject});
