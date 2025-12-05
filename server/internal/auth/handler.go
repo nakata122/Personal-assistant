@@ -8,9 +8,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+    "github.com/golang-jwt/jwt/v5"
 
 	"server/internal/config"
-	"server/internal/user"
+	"server/internal/users"
+	"server/internal/emails"
 )
 
 func Ping(c *gin.Context) { 
@@ -42,20 +44,53 @@ func GoogleCallback(c *gin.Context) {
 		log.Println(err);
 		return;
     }
-	setCookies(c, token);
 	
+	//Database handling
 	userData, err := GetUserData(token);
 	if err != nil {
 		log.Println(err);
 		return;
     }
 
-	user.CreateUser(c, userData);
+	var id int;
+	curUser := users.GetUserByEmail(c, userData.Email);
+	if curUser == nil {
+		id = users.CreateUser(c, userData);
+	} else {
+		id = curUser.UserID;
+	}
 
-	GetMessages(c, token, 10);
+	myToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+        "id":    id,
+        "email": userData.Email,
+        "exp":   time.Now().Add(24 * time.Hour).Unix(),
+    });
 
+    session_token, err := myToken.SignedString([]byte(os.Getenv("JWT_SECRET")));
+    if err != nil {
+        log.Fatal(err);
+    }
+
+	setCookies(c, token, session_token);
+	
 	//Redirect to front-end
 	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
+
+	go func() {
+		log.Println(id);
+		messages := GetMessages(c, token, id, 2);
+
+		for _,message := range messages {
+			var emailData emails.Email;
+			emailData.UserID = id;
+			emailData.Title = message.Title;
+			emailData.Summary = message.Summary;
+			emailData.Tags = []string{"formal", "urgent"};
+
+			emails.CreateEmail(c, emailData);
+		}
+	}();
+
 }
 
 func Logout(c *gin.Context) {
@@ -70,7 +105,17 @@ func Logout(c *gin.Context) {
 	})
 }
 
-func setCookies(c *gin.Context, token *oauth2.Token) {
+func setCookies(c *gin.Context, token *oauth2.Token, session_token string) {
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "session_token",
+		Value:    session_token,
+		Expires:  time.Now().Add(24 * time.Hour),
+        Path:     "/",
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	});
+
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     "access_token",
 		Value:    token.AccessToken,

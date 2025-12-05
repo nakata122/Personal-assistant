@@ -28,8 +28,9 @@ function Alternate({direction}: {direction: boolean}) {
         )
 }
 
-function Card({title, summary, tags, index} : props) {
+function Card({title, summary, score, tags, index} : props) {
     const direction = index % 2 === 0;
+    tags.unshift(score);
 
   return (
     <div className="flex text-left mx-auto">
@@ -44,7 +45,7 @@ function Card({title, summary, tags, index} : props) {
         </div>
         <hr />
         <div className="m-2">
-        {tags.map(tag => {
+        {tags?.map(tag => {
             return <span className="p-1 m-1 rounded-lg inline bg-gray-900 myShadow text-white">{tag}</span>;
         })}
         </div>

@@ -42,6 +42,6 @@ def extract_email_data(email_text):
 
     return data
     
-print(sys.argv[1])
+# print(sys.argv[1])
 extracted_data = extract_email_data(sys.argv[1])
 print(extracted_data)

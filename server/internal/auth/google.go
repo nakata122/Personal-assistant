@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -14,17 +14,17 @@ import (
 	"google.golang.org/api/gmail/v1"
 	"google.golang.org/api/option"
 
-	"server/internal/utils"
+	"server/internal/emails"
 	"server/internal/config"
-	"server/internal/user"
+	"server/internal/users"
 )
 
 
-func GetUserData(token *oauth2.Token) (*user.User, error) {
+func GetUserData(token *oauth2.Token) (*users.User, error) {
 	//Get user info
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken);
 	if err != nil {
-		fmt.Println(err);
+		log.Println(err);
 		return nil, err;
 	}
 
@@ -32,7 +32,7 @@ func GetUserData(token *oauth2.Token) (*user.User, error) {
 	decoder := json.NewDecoder(resp.Body);
 	decoder.DisallowUnknownFields();
 
-    var data user.User;
+    var data users.User;
     decoder.Decode(&data);
 
 	return &data, nil;
@@ -44,7 +44,7 @@ func GetMessageIDs(srv *gmail.Service, user string, max int64) []string {
 	resp, err := srv.Users.Messages.List(user).MaxResults(max).Do();
 
 	if err != nil {
-		fmt.Printf("Unable to list messages: %v", err);
+		log.Printf("Unable to list messages: %v", err);
 	}
 
 	for _, m := range resp.Messages {
@@ -54,7 +54,8 @@ func GetMessageIDs(srv *gmail.Service, user string, max int64) []string {
 	return ids;
 }
 
-func GetMessages(c *gin.Context, token *oauth2.Token, max int64) {
+
+func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []emails.Email{
 	client := config.Oauth.Client(c, token);
 
 	srv, _ := gmail.NewService(c, option.WithHTTPClient(client));
@@ -62,11 +63,22 @@ func GetMessages(c *gin.Context, token *oauth2.Token, max int64) {
 	user := "me";
 	ids := GetMessageIDs(srv, user, max);
 
+	messages := []emails.Email{}
+
 	for _, id := range ids {
 		message, err := srv.Users.Messages.Get(user, id).Format("full").Do();
 		if err != nil {
-			fmt.Printf("Unable to get message: %v", err);
+			log.Printf("Unable to get message: %v", err);
 		}
+
+		subject := ""
+		for _, h := range message.Payload.Headers {
+			if h.Name == "Subject" {
+				subject = h.Value;
+				break;
+			}
+		}
+		
 
 		var buffer bytes.Buffer;
 		if(message.Payload.Body != nil && message.Payload.Body.Data != "") {
@@ -78,9 +90,11 @@ func GetMessages(c *gin.Context, token *oauth2.Token, max int64) {
 		
 		body := htmlToText(buffer.String());
 		
-		utils.ParseEmail(c, body);
+		parsedEmail := emails.ParseEmail(c, body);
+		messages = append(messages, emails.Email{UserID: user_id, Summary: parsedEmail, Title: subject});
 	}
 
+	return messages;
 }
 
 
