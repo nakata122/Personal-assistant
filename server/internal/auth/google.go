@@ -1,12 +1,10 @@
-package controllers
+package auth
 
 import (
-	"backend/config"
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	// "io"
 	"net/http"
 	"strings"
 
@@ -16,11 +14,13 @@ import (
 	"google.golang.org/api/gmail/v1"
 	"google.golang.org/api/option"
 
-	"backend/models"
+	"server/internal/utils"
+	"server/internal/config"
+	"server/internal/user"
 )
 
 
-func ReadUserData(token *oauth2.Token) (*models.User, error) {
+func GetUserData(token *oauth2.Token) (*user.User, error) {
 	//Get user info
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken);
 	if err != nil {
@@ -32,13 +32,13 @@ func ReadUserData(token *oauth2.Token) (*models.User, error) {
 	decoder := json.NewDecoder(resp.Body);
 	decoder.DisallowUnknownFields();
 
-    var data models.User;
+    var data user.User;
     decoder.Decode(&data);
 
 	return &data, nil;
 }
 
-func listMessageIDs(srv *gmail.Service, user string, max int64) []string {
+func GetMessageIDs(srv *gmail.Service, user string, max int64) []string {
 	var ids []string;
 
 	resp, err := srv.Users.Messages.List(user).MaxResults(max).Do();
@@ -53,6 +53,36 @@ func listMessageIDs(srv *gmail.Service, user string, max int64) []string {
 
 	return ids;
 }
+
+func GetMessages(c *gin.Context, token *oauth2.Token, max int64) {
+	client := config.Oauth.Client(c, token);
+
+	srv, _ := gmail.NewService(c, option.WithHTTPClient(client));
+
+	user := "me";
+	ids := GetMessageIDs(srv, user, max);
+
+	for _, id := range ids {
+		message, err := srv.Users.Messages.Get(user, id).Format("full").Do();
+		if err != nil {
+			fmt.Printf("Unable to get message: %v", err);
+		}
+
+		var buffer bytes.Buffer;
+		if(message.Payload.Body != nil && message.Payload.Body.Data != "") {
+			data, _ := base64.URLEncoding.DecodeString(message.Payload.Body.Data);
+			buffer.Write(data);
+		}
+		
+		readBodyParts(message.Payload.Parts, &buffer);
+		
+		body := htmlToText(buffer.String());
+		
+		utils.ParseEmail(c, body);
+	}
+
+}
+
 
 func extractText(n *html.Node) string {
     if n.Type == html.TextNode {
@@ -89,28 +119,3 @@ func readBodyParts(parts []*gmail.MessagePart, text *bytes.Buffer) {
 	}
 }
 
-func ReadMessages(c *gin.Context, token *oauth2.Token) {
-	client := config.Oauth.Client(c, token)
-
-	srv, _ := gmail.NewService(c, option.WithHTTPClient(client))
-
-	user := "me"
-	ids := listMessageIDs(srv, user, 100) // get first 100 message IDs
-
-	message, err := srv.Users.Messages.Get(user, ids[0]).Format("full").Do();
-	if err != nil {
-		fmt.Printf("Unable to get message: %v", err);
-	}
-
-    var buffer bytes.Buffer
-	if(message.Payload.Body != nil && message.Payload.Body.Data != "") {
-		data, _ := base64.URLEncoding.DecodeString(message.Payload.Body.Data);
-		buffer.Write(data);
-	}
-
-	readBodyParts(message.Payload.Parts, &buffer);
-
-	body := htmlToText(buffer.String());
-	
-	ExtractInfo(c, body);
-}

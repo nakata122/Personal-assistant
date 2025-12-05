@@ -3,13 +3,13 @@ package config
 import (
 	"os"
 	"bufio"
-	"fmt"
+	"log"
 )
 
 func LoadEnv() {
 	env, err := os.Open(".env");
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err);
 	}
 	
 	s := bufio.NewScanner(env);

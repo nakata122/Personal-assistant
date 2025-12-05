@@ -1,4 +1,4 @@
-package controllers
+package utils
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ExtractInfo(c *gin.Context, message string) {
-	cmd := exec.Command("python", "./python/script.py", message);
+func ParseEmail(c *gin.Context, message string) {
+	cmd := exec.Command("python", "./scripts/script.py", message);
 
 	out, err := cmd.CombinedOutput();
 	if err != nil {

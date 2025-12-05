@@ -1,8 +1,7 @@
-package controllers
+package auth
 
 import (
-	"context"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -10,28 +9,27 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 
-	"backend/config"
-	// "backend/models"
+	"server/internal/config"
+	"server/internal/user"
 )
 
 func Ping(c *gin.Context) { 
-	fmt.Println(c.Request.Cookies());
+	log.Println(c.Request.Cookies());
 
 	c.JSON(200, gin.H{"Message": "pong"});
 }
 
 func GoogleLogin(c *gin.Context) {
 	// Redirect user to Google's OAuth consent screen
-    url := config.Oauth.AuthCodeURL(os.Getenv("STATE"), oauth2.AccessTypeOffline);
+    url := config.Oauth.AuthCodeURL(os.Getenv("STATE"));
 	c.Redirect(http.StatusTemporaryRedirect, url);
 }
 
 func GoogleCallback(c *gin.Context) {
 	//Check state
 	state := c.Query("state");
-
     if state != os.Getenv("STATE") {
-		fmt.Println("States don't Match!" + state);
+		log.Println("States don't Match!" + state);
 		return;
     }
 
@@ -39,33 +37,22 @@ func GoogleCallback(c *gin.Context) {
     code := c.Query("code");
 
 	//Decode token
-    token, err := config.Oauth.Exchange(c.Request.Context(), code);
+    token, err := config.Oauth.Exchange(c, code);
     if err != nil {
-		fmt.Println(err);
+		log.Println(err);
 		return;
     }
 	setCookies(c, token);
 	
-	userData, err := ReadUserData(token);
+	userData, err := GetUserData(token);
 	if err != nil {
-		fmt.Println(err);
+		log.Println(err);
 		return;
     }
-	fmt.Println(userData.Name, userData.Email)
 
-	// query := `SELECT * FROM users`;
-	fmt.Println(config.DbConn);
-	// config.DbConn.Exec(context.Background(), query);
-	// Insert into PostgreSQL
-    query := `INSERT INTO users (google_id, email, name, picture) VALUES ($1, $2, $3, $4)`
-    _, err = config.DbConn.Exec(context.Background(), query, userData.GoogleID, userData.Email, userData.Name, userData.Picture);
+	user.CreateUser(c, userData);
 
-    if err != nil {
-		fmt.Println(err);
-        return;
-    }
-
-	ReadMessages(c, token);
+	GetMessages(c, token, 10);
 
 	//Redirect to front-end
 	c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
@@ -84,8 +71,6 @@ func Logout(c *gin.Context) {
 }
 
 func setCookies(c *gin.Context, token *oauth2.Token) {
-	
-
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     "access_token",
 		Value:    token.AccessToken,
