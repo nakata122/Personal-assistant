@@ -8,7 +8,7 @@ type ModalProps = {
 function Modal({ toggle } : ModalProps) {
 
     function handleLogin() {
-        window.location.href = "http://localhost:3000/api/auth/google";
+        window.location.href = "/api/auth/google";
     }
 
     return (<div className="flex fixed top-0 left-0 h-screen w-screen backdrop-blur-sm z-20 overflow-hidden">
