@@ -26,6 +26,6 @@ jobs:
       - name: Pull docker image
         run: docker pull nakata122/assistant:latest
       - name: Delete old container
-        run: docker -rm -f assistant-container
+        run: docker rm -f assistant-container
       - name: Run docker container
         run: docker run -d -p 3000:3000 --name assistant-container nakata122/assistant

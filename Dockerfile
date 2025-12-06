@@ -1,16 +1,27 @@
 FROM node:25-alpine AS frontend
-WORKDIR /app
+WORKDIR /client
 
 COPY client/package.json .
 
 RUN npm install
 
-RUN npm i -g serve
-
 COPY client/ .
 
 RUN npm run build
 
-EXPOSE 3000
+FROM golang:1.25 AS server
 
-CMD [ "serve", "-s", "dist" ]
+WORKDIR /server
+
+RUN mv client/dist .
+
+COPY server/go.mod server/go.sum ./
+RUN go mod tidy
+
+COPY server/ .
+
+RUN go build -o bin/main cmd/main.go
+
+RUN chmod +x /server/bin/main
+
+CMD ["/server/bin/main"]

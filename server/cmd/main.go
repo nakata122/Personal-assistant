@@ -9,15 +9,18 @@ import (
 	"server/internal/http"
 )
 
-
-
-
 func main() {
 	config.LoadEnv();
 	config.InitOauthConfig();
 	config.ConnectDb();
 
 	router := gin.Default();
+
+    router.Static("/assets", "./dist/assets") ;
+
+    router.NoRoute(func(c *gin.Context) {
+        c.File("./dist/index.html");
+    })
 
 	http.InitMiddleware(router);
 
