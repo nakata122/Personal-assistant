@@ -1,0 +1,20 @@
+name: Deploy Project
+
+on: 
+    push:
+        branches:
+            - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Initiate checkout
+        uses: actions/checkout@v5
+      - name: Login to DockeHub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Build docker image
+        run: docker build -t nakata122/assistant .
+      - name: Push image to DockerHub
+        run: docker push nakata122/assistant:latest

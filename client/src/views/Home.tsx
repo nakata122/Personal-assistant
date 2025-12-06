@@ -11,17 +11,20 @@ function Home() {
             username: 'John',
             title: 'Something BIG',
             summary: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem alias harum deserunt at est dignissimos cupiditate doloremque? Asperiores possimus.',
-            tags: ['well formatted', 'formal', 'job offer']
+            score: 0.8,
+            tags: ['well formatted', 'formal', 'ipsum']
         },{
             username: 'John',
             title: 'Something BIG',
             summary: 'Lorem ipt dignissimos cupiditate doloremque? Asperiores possimus.',
-            tags: ['well formatted', 'formal', 'job offer']
+            score: 0.2,
+            tags: ['short', 'formal']
         },{
             username: 'John',
             title: 'Something BIG',
             summary: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem alias harum deserunt at est dignissimos cupiditate doloremque? Asperiores possimus.',
-            tags: ['well formatted', 'formal', 'job offer']
+            score: 0.9,
+            tags: ['informal', 'jlorem']
         }
     ];
 

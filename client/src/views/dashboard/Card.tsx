@@ -4,6 +4,7 @@ type props = {
     title: string,
     summary: string,
     tags: string[],
+    score: number,
     index: number
 }
 
@@ -30,7 +31,7 @@ function Alternate({direction}: {direction: boolean}) {
 
 function Card({title, summary, score, tags, index} : props) {
     const direction = index % 2 === 0;
-    tags.unshift(score);
+    tags.unshift(score.toString());
 
   return (
     <div className="flex text-left mx-auto">
