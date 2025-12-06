@@ -14,6 +14,7 @@ FROM golang:1.25 AS server-builder
 WORKDIR /server
 
 COPY server/go.mod server/go.sum ./
+
 RUN go mod tidy
 
 COPY --from=client-builder /client/dist ./dist
