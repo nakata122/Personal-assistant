@@ -3,7 +3,7 @@ import re
 import dateparser
 import sys
 
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 def extract_email_data(email_text):
     data = {

@@ -16,7 +16,7 @@ func main() {
 
 	router := gin.Default();
 
-    router.Static("/assets", "./dist/assets") ;
+    router.Static("/assets", "./dist/assets");
 
     router.NoRoute(func(c *gin.Context) {
         c.File("./dist/index.html");
@@ -27,5 +27,5 @@ func main() {
 	http.InitRoutes(router);
 
 	port := os.Getenv("PORT");
-	router.Run("0.0.0.0:" + port);
+	router.Run("localhost:" + port);
 }
