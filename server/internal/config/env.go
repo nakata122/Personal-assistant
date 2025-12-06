@@ -10,6 +10,7 @@ func LoadEnv() {
 	env, err := os.Open(".env");
 	if err != nil {
 		log.Println(err);
+		return;
 	}
 	
 	s := bufio.NewScanner(env);

@@ -25,4 +25,6 @@ RUN go build -o bin/main cmd/main.go
 
 RUN chmod +x /server/bin/main
 
+EXPOSE 3000
+
 CMD ["/server/bin/main"]
