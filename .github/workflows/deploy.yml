@@ -28,4 +28,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f assistant-container
       - name: Run docker container
-        run: docker run --network host --env-file /opt/assistant/.env -d -p 3000:3000 --name assistant-container nakata122/assistant
+        run: docker run --env-file /opt/assistant/.env -d -p 3000:3000 --name assistant-container nakata122/assistant
