@@ -18,3 +18,4 @@ jobs:
         run: docker build -t nakata122/assistant .
       - name: Push image to DockerHub
         run: docker push nakata122/assistant:latest
+        
