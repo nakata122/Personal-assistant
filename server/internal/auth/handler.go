@@ -75,7 +75,7 @@ func GoogleCallback(c *gin.Context) {
 	
 	//Redirect to front-end
 
-	c.Redirect(http.StatusFound, "http://localhost:" + os.Getenv("CLIENT_PORT") + "/dashboard");
+	c.Redirect(http.StatusFound, "http://" + os.Getenv("URL") + ":" + os.Getenv("CLIENT_PORT") + "/dashboard");
 
 	go func() {
 		messages := GetMessages(c, token, id, 2);
