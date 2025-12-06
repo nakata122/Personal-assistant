@@ -1,4 +1,4 @@
-FROM node:25-alpine AS frontend
+FROM node:25-alpine AS client-builder
 WORKDIR /client
 
 COPY client/package.json .
@@ -9,14 +9,14 @@ COPY client/ .
 
 RUN npm run build
 
-FROM golang:1.25 AS server
+FROM golang:1.25 AS server-builder
 
 WORKDIR /server
 
-RUN mv client/dist .
-
 COPY server/go.mod server/go.sum ./
 RUN go mod tidy
+
+COPY --from=client-builder /client/dist ./dist
 
 COPY server/ .
 
