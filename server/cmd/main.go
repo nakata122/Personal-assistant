@@ -27,5 +27,5 @@ func main() {
 	http.InitRoutes(router);
 
 	port := os.Getenv("PORT");
-	router.Run("localhost:" + port);
+	router.Run("0.0.0.0:" + port);
 }
