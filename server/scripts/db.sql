@@ -18,6 +18,7 @@ create table if not exists emails (
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
     title varchar(255),
     summary varchar(2000),
+    profilepic varchar(255),
     score REAL,
     tags TEXT[]
 );

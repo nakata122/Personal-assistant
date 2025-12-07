@@ -7,6 +7,7 @@ interface Email {
   email: string;
   title: string;
   summary: string;
+  profilepic: string;
   score: number;
   tags: string[];
 }
@@ -62,7 +63,7 @@ function Dashboard() {
                         emails.length === 0 ? 
                                             <></>:
                                             (emails.map((data, i) => {
-                                                return <Card {...data} index={i} />
+                                                return <Card {...data} index={i} key={i}/>
                                             }))
                     }
                 </div>

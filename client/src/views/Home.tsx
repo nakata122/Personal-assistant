@@ -9,21 +9,24 @@ function Home() {
   const emails = [
         {
             username: 'John',
-            title: 'Something BIG',
+            title: 'Lorem title',
             summary: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem alias harum deserunt at est dignissimos cupiditate doloremque? Asperiores possimus.',
             score: 0.8,
+            profilepic: "",
             tags: ['well formatted', 'formal', 'ipsum']
         },{
             username: 'John',
-            title: 'Something BIG',
+            title: 'Title 2',
             summary: 'Lorem ipt dignissimos cupiditate doloremque? Asperiores possimus.',
             score: 0.2,
+            profilepic: "",
             tags: ['short', 'formal']
         },{
             username: 'John',
-            title: 'Something BIG',
+            title: 'Title 3',
             summary: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem alias harum deserunt at est dignissimos cupiditate doloremque? Asperiores possimus.',
             score: 0.9,
+            profilepic: "",
             tags: ['informal', 'jlorem']
         }
     ];

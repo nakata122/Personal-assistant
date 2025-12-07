@@ -12,6 +12,7 @@ import (
 	"golang.org/x/net/html"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/gmail/v1"
+	"google.golang.org/api/people/v1"
 	"google.golang.org/api/option"
 
 	"server/internal/emails"
@@ -63,7 +64,7 @@ func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []
 	user := "me";
 	ids := GetMessageIDs(srv, user, max);
 
-	messages := []emails.Email{}
+	messages := []emails.Email{};
 
 	for _, id := range ids {
 		message, err := srv.Users.Messages.Get(user, id).Format("full").Do();
@@ -72,14 +73,23 @@ func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []
 		}
 
 		subject := ""
+		senderEmail := ""
 		for _, h := range message.Payload.Headers {
+			
 			if h.Name == "Subject" {
 				subject = h.Value;
-				break;
+			}
+			if h.Name == "From" {
+				str := h.Value;
+				senderEmail = str[strings.Index(str, "<") + 1:len(str) - 1];
 			}
 		}
-		
 
+		//Get sender Profile picture
+		profilePic := getProfilePic(c, client, senderEmail);
+
+		log.Println(profilePic)
+		
 		var buffer bytes.Buffer;
 		if(message.Payload.Body != nil && message.Payload.Body.Data != "") {
 			data, _ := base64.URLEncoding.DecodeString(message.Payload.Body.Data);
@@ -89,10 +99,9 @@ func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []
 		readBodyParts(message.Payload.Parts, &buffer);
 		
 		body := htmlToText(buffer.String());
-		log.Println(body);
 		
 		parsedEmail := emails.ParseEmail(c, body);
-		messages = append(messages, emails.Email{UserID: user_id, Summary: parsedEmail, Title: subject});
+		messages = append(messages, emails.Email{UserID: user_id, Summary: parsedEmail, Title: subject, ProfilePic: profilePic});
 	}
 
 	return messages;
@@ -134,3 +143,21 @@ func readBodyParts(parts []*gmail.MessagePart, text *bytes.Buffer) {
 	}
 }
 
+func getProfilePic(c *gin.Context, client *http.Client, senderEmail string) string {
+	srv, _ := people.NewService(c, option.WithHTTPClient(client));
+	call := srv.People.SearchContacts().
+			Query(senderEmail).
+			ReadMask("photos");
+
+	resp, err := call.Do();
+	if err != nil {
+		log.Printf("People API error: %v", err);
+	}
+	
+	var profilePic string;
+	if len(resp.Results) > 0 && len(resp.Results[0].Person.Photos) > 0 {
+		profilePic = resp.Results[0].Person.Photos[0].Url
+	}
+	
+	return profilePic;
+}

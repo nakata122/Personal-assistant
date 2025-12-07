@@ -78,20 +78,16 @@ func GoogleCallback(c *gin.Context) {
 	if(os.Getenv("ENV") == "PRODUCTION") {
 		c.Redirect(http.StatusFound, os.Getenv("URL") + "/dashboard");
 	} else {
-		c.Redirect(http.StatusFound, "http://localhost:3000/dashboard");
+		c.Redirect(http.StatusFound, "http://localhost:5173/dashboard");
 	}
 
 	go func() {
 		messages := GetMessages(c, token, id, 2);
 
 		for _,message := range messages {
-			var emailData emails.Email;
-			emailData.UserID = id;
-			emailData.Title = message.Title;
-			emailData.Summary = message.Summary;
-			emailData.Tags = []string{"formal", "urgent"};
+			message.Tags = []string{"formal", "urgent"};
 
-			emails.CreateEmail(c, emailData);
+			emails.CreateEmail(c, message);
 		}
 	}();
 

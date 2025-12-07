@@ -82,7 +82,7 @@ func GetEmails(c *gin.Context) {
 	query := `SELECT * FROM emails WHERE user_id=$1`;
     rows, err := config.DbConn.Query(c, query, user.ID);
 	if err != nil {
-		log.Println(err);
+		log.Printf("Error getting email %v", err);
 		return;
 	}
 	defer rows.Close();
@@ -92,7 +92,7 @@ func GetEmails(c *gin.Context) {
 	for rows.Next() {
 		var e Email;
 
-		err := rows.Scan(&e.EmailID, &e.UserID, &e.Title, &e.Summary, &e.Score, &e.Tags);
+		err := rows.Scan(&e.EmailID, &e.UserID, &e.Title, &e.Summary, &e.ProfilePic, &e.Score, &e.Tags);
 		if err != nil {
 			log.Println(err);
 		}
@@ -105,11 +105,11 @@ func GetEmails(c *gin.Context) {
 }
 
 func CreateEmail(c *gin.Context, emailData Email) {
-    query := `INSERT INTO emails (user_id, title, summary, score, tags) VALUES ($1, $2, $3, $4, $5)`;
-    _, err := config.DbConn.Exec(c, query, emailData.UserID, emailData.Title, emailData.Summary, emailData.Score, emailData.Tags);
+    query := `INSERT INTO emails (user_id, title, summary, profilepic, score, tags) VALUES ($1, $2, $3, $4, $5, $6)`;
+    _, err := config.DbConn.Exec(c, query, emailData.UserID, emailData.Title, emailData.Summary, emailData.ProfilePic, emailData.Score, emailData.Tags);
 
     if err != nil {
-		log.Println(err);
+		log.Printf("Error creating email %v", err);
         return;
     }
 }
