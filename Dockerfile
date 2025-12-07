@@ -33,8 +33,6 @@ WORKDIR /app
 COPY --from=server-builder /server/app .
 COPY --from=server-builder /server/dist ./dist
 
-RUN chmod +x main
-
 EXPOSE 3000
 
-CMD ["/app/main"]
+CMD ["./app"]
