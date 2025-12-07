@@ -23,14 +23,15 @@ COPY --from=client-builder /client/dist ./dist
 
 COPY server/ .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o bin/main cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o app ./cmd/main.go
 
 #FINAL IMAGE
 FROM alpine:3.19
 
 WORKDIR /app
 
-COPY --from=backend /server/bin/main .
+COPY --from=server-builder /server/app .
+COPY --from=server-builder /server/dist ./dist
 
 RUN chmod +x main
 
