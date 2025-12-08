@@ -60,17 +60,7 @@ func GoogleCallback(c *gin.Context) {
 		id = curUser.UserID;
 	}
 
-	myToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "id":    id,
-        "email": userData.Email,
-        "exp":   time.Now().Add(24 * time.Hour).Unix(),
-    });
-
-    session_token, err := myToken.SignedString([]byte(os.Getenv("JWT_SECRET")));
-    if err != nil {
-        log.Fatal(err);
-    }
-
+	session_token := CreateJWTToken(id, userData);
 	setCookies(c, token, session_token);
 	
 	//Redirect to front-end
@@ -90,7 +80,19 @@ func GoogleCallback(c *gin.Context) {
 			emails.CreateEmail(c, message);
 		}
 	}();
+}
 
+func RegisterGuest(c *gin.Context) {
+	var userData users.User;
+	userData.GoogleID = "";
+	userData.Role = users.RoleGuest;
+	id := users.CreateUser(c, &userData);
+
+	
+	session_token := CreateJWTToken(id, &userData);
+	setCookies(c, nil, session_token);
+
+	c.JSON(200, gin.H{"Message": "Guest user succesfully created"});
 }
 
 func Logout(c *gin.Context) {
@@ -116,30 +118,47 @@ func setCookies(c *gin.Context, token *oauth2.Token, session_token string) {
 		SameSite: http.SameSiteLaxMode,
 	});
 
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "access_token",
-		Value:    token.AccessToken,
-		Expires:  token.Expiry,
-        Path:     "/",
-		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-	});
-
-	// NOTE: Refresh token is only issued at the first consent
-	if token.RefreshToken != "" {
+	if token != nil {
 		http.SetCookie(c.Writer, &http.Cookie{
-			Name:     "refresh_token",
-			Value:    token.RefreshToken,
-			Expires:  time.Now().Add(time.Duration(100) * time.Hour),
-        	Path:     "/",
+			Name:     "access_token",
+			Value:    token.AccessToken,
+			Expires:  token.Expiry,
+			Path:     "/",
 			HttpOnly: false,
 			Secure:   false,
 			SameSite: http.SameSiteLaxMode,
 		});
+
+		// NOTE: Refresh token is only issued at the first consent
+		if token.RefreshToken != "" {
+			http.SetCookie(c.Writer, &http.Cookie{
+				Name:     "refresh_token",
+				Value:    token.RefreshToken,
+				Expires:  time.Now().Add(time.Duration(100) * time.Hour),
+				Path:     "/",
+				HttpOnly: false,
+				Secure:   false,
+				SameSite: http.SameSiteLaxMode,
+			});
+		}
 	}
+
+	
 }
 
+func CreateJWTToken(id int, userData *users.User) string{
+	myToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+        "id":    id,
+        "email": userData.Email,
+        "exp":   time.Now().Add(24 * time.Hour).Unix(),
+    });
 
+    session_token, err := myToken.SignedString([]byte(os.Getenv("JWT_SECRET")));
+    if err != nil {
+        log.Fatal(err);
+    }
+
+	return session_token;
+}
 
     

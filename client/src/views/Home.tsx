@@ -36,7 +36,7 @@ function Home() {
   };
 
   function handleGuest() {
-    fetch('/api/ping', { 
+    fetch('/api/auth/guest', { 
         method: 'get', 
         mode: 'no-cors',
         credentials: 'include',

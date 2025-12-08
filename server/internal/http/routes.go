@@ -9,6 +9,7 @@ import (
 
 func InitRoutes(router *gin.Engine) {
 	
+	router.GET("./api/auth/guest", auth.RegisterGuest);
 	router.GET("./api/auth/google", auth.GoogleLogin);
 	router.GET("./api/auth/google_callback", auth.GoogleCallback);
 	router.GET("./api/auth/logout", auth.Logout);
