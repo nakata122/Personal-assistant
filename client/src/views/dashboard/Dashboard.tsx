@@ -1,5 +1,6 @@
 import { BsHouseFill, BsPersonFill, BsQuestionCircleFill } from "react-icons/bs";
-import Card from "./Card"; 
+// import Card from "./Card"; 
+import Ticket from './Ticket'
 import { AiFillSetting } from "react-icons/ai";
 import { useEffect, useState } from "react";
 
@@ -35,35 +36,33 @@ function Dashboard() {
 
     return (
         <>
-            <div className="flex">
-                <div className="flex flex-col h-screen bg-gray-800 border-e-2 fixed myShadow top-0 text-white">
+            <div>
+                <div className="flex flex-col h-screen bg-gray-800 border-e-2 fixed myShadow top-0 text-white hidden md:flex">
                     <div className="p-2 h-16" />
-                    <button className="m-2 p-2 border border-white rounded-2xl shadow-sm shadow-white">
-                        <BsHouseFill size='40px' color="white" className="m-auto"/>
+                    <button className="m-1 border border-white rounded-2xl shadow-sm shadow-white">
+                        <BsHouseFill size='30px' color="white" className="m-auto"/>
                         <h1>Home</h1>
                     </button>
-                    <button className="m-4">
-                        <BsPersonFill size='40px' color="white" className="m-auto"/>
-                        <h1>Clients</h1>
+                    <button className="m-1">
+                        <BsPersonFill size='30px' color="white" className="m-auto"/>
+                        <h1>Contacts</h1>
                     </button>
                     <hr />
-                    <button className="m-4">
-                        <AiFillSetting size='40px' color="white" className="m-auto"/>
+                    <button className="m-1">
+                        <AiFillSetting size='30px' color="white" className="m-auto"/>
                         <h1>Settings</h1>
                     </button>
-                    <button className="m-4">
-                        <BsQuestionCircleFill size='40px' color="white" className="m-auto"/>
+                    <button className="m-1">
+                        <BsQuestionCircleFill size='30px' color="white" className="m-auto"/>
                         <h1>Help</h1>
                     </button>
-
                 </div>
-                <div className="flex flex-col grow bg-white">
-                    <h1 className="py-2 px-4 my-2 mx-auto rounded-lg bg-gray-900 text-white w-fit font-medium text-lg">Today</h1>
+                <div className="flex flex-col grow min-h-[90vh] md:ml-[70px] bg-white">
                     {
                         emails.length === 0 ? 
                                             <></>:
                                             (emails.map((data, i) => {
-                                                return <Card {...data} index={i} key={i}/>
+                                                return <Ticket {...data} index={i} key={i}/>
                                             }))
                     }
                 </div>

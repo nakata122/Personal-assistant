@@ -52,15 +52,12 @@ func GoogleCallback(c *gin.Context) {
 		return;
     }
 
-	var id int;
 	curUser := users.GetUserByEmail(c, userData.Email);
 	if curUser == nil {
-		id = users.CreateUser(c, userData);
-	} else {
-		id = curUser.UserID;
+		users.CreateUser(c, curUser);
 	}
 
-	session_token := CreateJWTToken(id, userData);
+	session_token := CreateJWTToken(curUser);
 	setCookies(c, token, session_token);
 	
 	//Redirect to front-end
@@ -72,7 +69,7 @@ func GoogleCallback(c *gin.Context) {
 	}
 
 	go func() {
-		messages := GetMessages(c, token, id, 2);
+		messages := GetMessages(c, token, curUser.UserID, 2);
 
 		for _,message := range messages {
 			message.Tags = []string{"formal", "urgent"};
@@ -86,10 +83,10 @@ func RegisterGuest(c *gin.Context) {
 	var userData users.User;
 	userData.GoogleID = "";
 	userData.Role = users.RoleGuest;
-	id := users.CreateUser(c, &userData);
+	users.CreateUser(c, &userData);
 
-	
-	session_token := CreateJWTToken(id, &userData);
+	// updatedData := users.GetUserByID(c, id);
+	session_token := CreateJWTToken(&userData);
 	setCookies(c, nil, session_token);
 
 	c.JSON(200, gin.H{"Message": "Guest user succesfully created"});
@@ -146,16 +143,17 @@ func setCookies(c *gin.Context, token *oauth2.Token, session_token string) {
 	
 }
 
-func CreateJWTToken(id int, userData *users.User) string{
+func CreateJWTToken(userData *users.User) string{
 	myToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "id":    id,
+        "id":    userData.UserID,
         "email": userData.Email,
         "exp":   time.Now().Add(24 * time.Hour).Unix(),
     });
 
     session_token, err := myToken.SignedString([]byte(os.Getenv("JWT_SECRET")));
     if err != nil {
-        log.Fatal(err);
+        log.Println(err);
+		return "";
     }
 
 	return session_token;

@@ -46,7 +46,10 @@ function Home() {
     }).then(res => {
       console.log(res);
       return res.json();
-    }).then(data => console.log(data));
+    }).then(data => {
+      console.log(data);
+        window.location.href = "/dashboard";
+    });
     
   }
 
@@ -55,10 +58,10 @@ function Home() {
     <div className="flex flex-col text-white h-screen bg-linear-to-b from-sky-600 to-blue-200">
         {login ? <Login toggle={toggleLogin}/> : null}
         <h1 className="title mx-20 my-5 font-bold">
-            Zero-setup customer identity recognition
+            Email assistant
         </h1>
         <p className="text-2xl w-1/3 ml-auto mr-auto my-5">
-            An NLP and AI system that analyzes every email across your company and builds a real-time customer profile.
+            An NLP and AI system that analyzes every email across your company and summarizes them with appropriate tags.
         </p>
         <div className="flex flex-row justify-center font-medium">
             <button onClick={handleGuest} className="p-3 m-3 rounded-2xl bg-white text-4xl text-blue-950 shadow-2xl hover:bg-gray-100">

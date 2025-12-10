@@ -87,8 +87,6 @@ func GetMessages(c *gin.Context, token *oauth2.Token, user_id int, max int64) []
 
 		//Get sender Profile picture
 		profilePic := getProfilePic(c, client, senderEmail);
-
-		log.Println(profilePic)
 		
 		var buffer bytes.Buffer;
 		if(message.Payload.Body != nil && message.Payload.Body.Data != "") {

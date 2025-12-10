@@ -1,8 +1,6 @@
 package auth
 
 import (
-	// "errors"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -45,8 +43,7 @@ func AuthMiddleware() gin.HandlerFunc {
         // Extract user info
         idFloat, okID := claims["id"].(float64);
         email, okEmail := claims["email"].(string);
-        log.Println(idFloat)
-        log.Println(email)
+        
         if !okID || !okEmail {
             c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token data"});
             return;
